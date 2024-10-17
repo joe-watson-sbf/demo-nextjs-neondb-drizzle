@@ -26,9 +26,11 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning suppressContentEditableWarning>
       <body className={inter.className}>
         <Theme>
-          {children}
+          <main className='container p-8 max-w-xl mx-auto'>
+            {children}
+          </main>
         </Theme>
-        </body>
+      </body>
     </html>
   );
 }

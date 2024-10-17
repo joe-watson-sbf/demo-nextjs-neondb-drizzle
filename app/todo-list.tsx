@@ -1,18 +1,18 @@
-import React, { Suspense } from 'react'
 import { getTodos } from '@/lib/action'
 import { TodoCard } from './todo'
 
-export default async function TodoList() {
+type Props = {
+  ownerId: string | undefined
+}
+export default async function TodoList({ ownerId }: Props) {
 
-  const todos = await getTodos()
+  const todos = await getTodos(ownerId)
 
   return (
-    <div>
-      <Suspense fallback={<div>Loading...</div>} />
+    <>
       {todos.map(todo => (
         <TodoCard key={todo.id} todo={todo} />
       ))}
-      <Suspense />
-    </div>
+    </>
   )
 }

@@ -1,44 +1,68 @@
 "use server";
-import { Todo } from '@/types';
-import { neon } from "@neondatabase/serverless";
+
+import { db } from '@/db/drizzle';
+import { TodoTable, UserTable } from '@/db/schema';
+import { Todo, User } from '@/types';
+import { desc, eq } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 import { cache } from 'react';
 
-const sql = neon(process.env.DATABASE_URL as string);
 
-export const getTodos = cache(async (): Promise<Todo[]> => {
-  const data: Todo[] = await sql`SELECT * FROM todos 
-    order by id desc
-  ` as Todo[]
-  return data
+
+
+
+export const getUsers = cache(async (): Promise<User[]> => {
+  const users = await db.select().from(UserTable);
+  return users as unknown as User[];
 });
 
-export const getTodo = cache(async (id: number): Promise<Todo> => {
-  const data = await sql`SELECT * FROM todos WHERE id = ${id}`
-  if (data.length === 0) {
-    throw new Error('Todo not found')
+
+
+
+
+
+
+export const getTodos = cache(async (ownerId: string | undefined): Promise<Todo[]> => {
+  if (!ownerId) {
+    return [];
   }
-  return data as unknown as Todo
+
+  const todos = await db.select()
+      .from(TodoTable)
+      .where(eq(TodoTable.user_id, ownerId))
+      .orderBy(desc(TodoTable.create_at));
+  return todos as unknown as Todo[];
 });
+
 
 
 export const addTodo = async (form:FormData): Promise<void> => {
   const title = form.get('title') as string;
-  const todo: Partial<Todo> = {
+  const userId = form.get('userId') as string;
+
+  if (!title || !userId) {
+    throw new Error("Title and User ID are required.");
+  }
+
+  await db.insert(TodoTable).values({
     title,
+    user_id: userId,
     completed: false
-  };
-  await sql`INSERT INTO todos (title, completed) VALUES (${todo.title}, ${todo.completed})`;
+  });
   revalidatePath('/');
 };
 
 
-export const updateTodo = async (id: number, completed: boolean): Promise<void> => {
-  await sql`UPDATE todos SET completed = ${completed} WHERE id = ${id}`;
-};
-
-
-export const deleteTodo = async (id: number): Promise<void> => {
-  await sql`DELETE FROM todos WHERE id = ${id}`;
+export const updateTodo = async (id: string, completed: boolean): Promise<void> => {
+  await db.update(TodoTable)
+      .set({ completed })
+      .where(eq(TodoTable.id, id));
   revalidatePath('/');
 };
+
+
+export const deleteTodo = async (id: string): Promise<void> => {
+  await db.delete(TodoTable).where(eq(TodoTable.id, id));
+  revalidatePath('/');
+};
+

@@ -2,7 +2,10 @@ import { addTodo } from '@/lib/action'
 import { Button, TextField, Theme } from '@radix-ui/themes'
 import React from 'react'
 
-export const AddTodoForm = () => {
+type Props = {
+  ownerId: string | undefined
+}
+export const AddTodoForm = ({ ownerId }:Props) => {
 
   return (
     <form className='w-full' action={addTodo}>
@@ -13,6 +16,7 @@ export const AddTodoForm = () => {
           </TextField.Slot>
         </TextField.Root>
       </Theme>
+      <input type="hidden" name="userId" value={ownerId} />
     </form>
   )
 }
