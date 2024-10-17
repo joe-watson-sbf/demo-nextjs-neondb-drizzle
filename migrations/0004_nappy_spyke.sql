@@ -1,1 +1,0 @@
-ALTER TABLE "todos" DROP CONSTRAINT "todos_user_id_unique";
