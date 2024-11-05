@@ -1,5 +1,7 @@
 # Next.js + Neon Database + Drizzle
-This is a simple example of how to use Neon Database with Next.js and Drizzle.
+postgresql://todo_owner:Xm7vg5GrYjcB@ep-silent-leaf-a5w799we.us-east-2.aws.neon.tech/todo?sslmode=require
+
+
 
 ## Getting Started
 1. Clone this repository
