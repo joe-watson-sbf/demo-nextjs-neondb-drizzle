@@ -6,7 +6,7 @@ export async function GET(req: NextRequest) {
   const search = req.nextUrl.searchParams.get('search'); 
   const allTodos = await findAllTodos();
   const todos = search ? allTodos.filter(todo => todo.title.toLowerCase().includes((search.toLowerCase().trim()))) : allTodos;
-  if (status) {
+  if (status && status!==undefined && status!=="undefined") {
     const todoReq = status === "completed" ? true : false;
     return NextResponse.json(todos.filter(todo => todo.completed===todoReq));
   }
