@@ -3,18 +3,19 @@ import { CheckIcon, MixerVerticalIcon, PlusIcon } from '@radix-ui/react-icons';
 import { Button, Dialog, Popover, TextField, Theme } from '@radix-ui/themes';
 import Link from 'next/link';
 import { TodoCard } from './todo-card';
-import { findAllTodos } from '@/lib/action';
 
-export default async function page({ searchParams }: { searchParams: { status: string | undefined, search: string | undefined } }) {
+export default async function page(
+  props: { searchParams: Promise<{ status: string | undefined, search: string | undefined }> }
+) {
+  const searchParams = await props.searchParams;
 
   const { status, search } = searchParams;
 
-  const todos:Todo[] = await findAllTodos();
+  const todos:Todo[] = []
 
   return (
-    <div className='space-y-4'>
+    (<div className='space-y-4'>
       <h1 className='text-4xl font-bold'>Todo App</h1>
-
       <div className='flex gap-4 items-center'>
         <Theme radius="medium">
           <TextField.Root name='search' size="3" placeholder="Search by name..." defaultValue={search}>
@@ -74,12 +75,9 @@ export default async function page({ searchParams }: { searchParams: { status: s
         </Popover.Root>
 
       </div>
-      
-
       {todos.map(todo => (
-        <TodoCard todo={todo} />
+        <TodoCard key={todo.id} todo={todo} />
       ))}
-
-    </div>
-  )
+    </div>)
+  );
 }
