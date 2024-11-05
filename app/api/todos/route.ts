@@ -2,12 +2,13 @@ import { addTodo, deleteTodo, findAllTodos, updateTodo } from '@/lib/action';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(req: NextRequest) {
-  const status = req.nextUrl.searchParams.get('status') === "completed" ? true : false;
+  const status = req.nextUrl.searchParams.get('status')
   const search = req.nextUrl.searchParams.get('search'); 
   const allTodos = await findAllTodos();
   const todos = search ? allTodos.filter(todo => todo.title.toLowerCase().includes((search.toLowerCase().trim()))) : allTodos;
   if (status) {
-    return NextResponse.json(todos.filter(todo => todo.completed));
+    const todoReq = status === "completed" ? true : false;
+    return NextResponse.json(todos.filter(todo => todo.completed===todoReq));
   }
 
   return NextResponse.json(todos);
