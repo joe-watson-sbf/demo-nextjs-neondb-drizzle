@@ -1,5 +1,5 @@
 # Next.js + Neon Database + Drizzle
-postgresql://todo_owner:Xm7vg5GrYjcB@ep-silent-leaf-a5w799we.us-east-2.aws.neon.tech/todo?sslmode=require
+postgresql://<username>:<password>@<database>/todo?sslmode=require
 
 
 
